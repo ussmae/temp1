@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나만의_작은_계산기</title>
+</head>
+<body>
+
+  <h1>15장 예제 번호를 입력해주세요.</h1>
+
+  <form id="dataForm">
+    <label for="Pb_Ch">소챕터:</label>
+    <input type="number" id="Pb_Ch" name="Pb_Ch" value="1"><br>
+
+    <label for="Pb_Num">예제 번호:</label>
+    <input type="number" id="Pb_Num" name="Pb_Num" value="4"><br>
+
+    <label for="Pb_Mtd">좌표계 순서:</label>
+    <input type="text" id="Pb_Mtd" name="Pb_Mtd" value="Cartesian xyz"><br>
+
+    <label for="Shade_On">3차원 그래프 그림자:</label>
+    <input type="checkbox" id="Shade_On" name="Shade_On" checked><br>
+
+    <label for="AllGraph">그래프 전체함수:</label>
+    <input type="checkbox" id="AllGraph" name="AllGraph" checked><br>
+
+    <label for="contour_line">등고선:</label>
+    <input type="checkbox" id="contour_line" name="contour_line"><br>
+
+    <button type="button" onclick="sendData()">데이터 전송</button>
+  </form>
+
+  <script>
+    function sendData() {
+      var UserData = {
+        Pb_Ch : document.getElementById("Pb_Ch").value,
+        Pb_Num : document.getElementById("Pb_Num").value,
+        Pb_Mtd : document.getElementById("Pb_Mtd").value,
+        Shade_On : document.getElementById("Shade_On").checked,
+        AllGraph : document.getElementById("AllGraph").checked,
+        contour_line : document.getElementById("contour_line").checked
+      };
+
+      // 객체를 JSON 문자열로 변환
+      var jsonPrbl = JSON.stringify(UserData);
+      console.log('보내는 JSON 데이터:', jsonPrbl);
+
+      // 서버에 데이터를 전송
+      fetch('\\coding\\templates\\bc_app.py', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: jsonPrbl
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`서버 응답 오류: ${response.status}`);
+        }
+        return response.json();  // 정상적인 응답 받음
+      })
+      .then(processedData => {
+        console.log('서버로부터 받은 가공된 데이터:', processedData);
+        window.location.href = '15.1.html';
+      })
+      .catch(error => {
+        console.error('데이터 전송 중 오류 발생:', error);
+        // 에러를 화면에 표시하거나 다른 처리 수행
+      });
+    }
+  </script>
+
+</body>
+</html>
